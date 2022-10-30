@@ -1,0 +1,7 @@
+{
+  "name": "com.torbst.torbutils",
+  "version": "1.0.0",
+  "displayName": "TorbuTils",
+  "description": "Common utilities used in TorbsT's projects",
+  "unity": "2022.1"
+}
