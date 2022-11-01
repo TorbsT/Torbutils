@@ -103,16 +103,16 @@ namespace TorbuTils
             public float Progress => (Time.time - StartTime) / Duration;
 
             // REQUIRE ASSIGNMENT
-            public T StartValue { get; init; }
-            public T EndValue { get; init; }
-            public BasicAction<T> Action { get; init; }
+            public T StartValue { get; set; }
+            public T EndValue { get; set; }
+            public BasicAction<T> Action { get; set; }
 
             // OPTIONAL ASSIGNMENT
             public event Action<Anim<T>> OnFinish;
-            public AnimationCurve Curve { get; init; }
-            public GameObject GO { get; init; }
-            public float Duration { get; init; } = 1f;
-            public float StartTime { get; init; } = Time.time;
+            public AnimationCurve Curve { get; set; }
+            public GameObject GO { get; set; }
+            public float Duration { get; set; } = 1f;
+            public float StartTime { get; set; } = Time.time;
 
             public void Start()
             {
@@ -134,10 +134,4 @@ namespace TorbuTils
             }
         }
     }
-}
-namespace System.Runtime.CompilerServices
-{
-    // NEED THIS in order to use init in properties
-    // https://stackoverflow.com/questions/64749385/predefined-type-system-runtime-compilerservices-isexternalinit-is-not-defined
-    internal static class IsExternalInit { }
 }
