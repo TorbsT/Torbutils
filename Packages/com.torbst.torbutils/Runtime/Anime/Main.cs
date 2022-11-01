@@ -110,7 +110,7 @@ namespace TorbuTils
             // OPTIONAL ASSIGNMENT
             public event Action<Anim<T>> OnFinish;
             public AnimationCurve Curve { get; init; }
-            public GameObject GameObject { get; init; }
+            public GameObject GO { get; init; }
             public float Duration { get; init; } = 1f;
             public float StartTime { get; init; } = Time.time;
 
