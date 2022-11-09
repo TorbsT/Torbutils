@@ -4,7 +4,7 @@ using UnityEngine;
 using TorbuTils.Giraphe;
 using UnityEditor;
 
-public class DijkstraTest : MonoBehaviour
+public class DijkstraTest : MonoBehaviour, IGraphVisualizerProvider
 {
     [Range(0f, 1f)] public float edgeChance = 0.2f;
     public bool showExistingEdges;
@@ -15,7 +15,7 @@ public class DijkstraTest : MonoBehaviour
     private Graph input;
     private Graph output => dijkstra.ResultTree;
     IEnumerator cor;
-
+    /*
     private void OnDrawGizmos()
     {
         if (!Application.isPlaying) return;
@@ -38,7 +38,6 @@ public class DijkstraTest : MonoBehaviour
 
             Gizmos.DrawLine(GetPos(from), GetPos(to));
         }
-        
 
         if (dijkstra == null) return;
         if (output == null) return;
@@ -51,13 +50,13 @@ public class DijkstraTest : MonoBehaviour
             Gizmos.DrawLine(GetPos(from), GetPos(to));
         }
     }
-
+    */
     private void OnEnable()
     {
         input = new();
         for (int i = 0; i < nodeCount; i++)
         {
-            Vector2 iPos = new Vector2(Random.value, Random.value);
+            Vector2 iPos = new(Random.value, Random.value);
             input.SetSatellite(i, "pos", iPos);
             for (int j = 0; j < i; j++)
             {
@@ -77,11 +76,21 @@ public class DijkstraTest : MonoBehaviour
             dijkstra = new(input, 0);
         else
             dijkstra = new(input, 0, maxSteps);
+        dijkstra.Done += Done;
         cor = dijkstra.Solve().GetEnumerator();
     }
     private void Update()
     {
         if (cor != null)
         cor.MoveNext();
+    }
+    public void Done()
+    {
+        Debug.Log("Done!");
+    }
+    public Graph GetGraph(int graphId)
+    {
+        if (graphId == 0) return input;
+        return output;
     }
 }

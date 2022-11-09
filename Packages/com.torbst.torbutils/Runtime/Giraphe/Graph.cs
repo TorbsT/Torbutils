@@ -14,7 +14,7 @@ namespace TorbuTils.Giraphe
         private Dictionary<(int, int), int> Weights { get; set; } = new(); // Optional
         private Dictionary<int, Dictionary<string, object>> NodeSatellites { get; set; } = new();
 
-        public IEnumerable<(int, int)> CopyEdges()
+        public ICollection<(int, int)> CopyEdges()
         {
             HashSet<(int, int)> edges = new();
             foreach (int from in Edges.GetNodes())
@@ -26,6 +26,22 @@ namespace TorbuTils.Giraphe
             }
             return edges;
         }
+
+        public static Graph MakeFromSatellites(Graph inputGraph)
+        {
+            Graph result = new();
+            for (int i = 0; i < inputGraph.NodeCount; i++)
+            {
+                if (!inputGraph.NodeSatellites.ContainsKey(i)) continue;
+                foreach (string key in inputGraph.NodeSatellites[i].Keys)
+                {
+                    object value = inputGraph.NodeSatellites[i][key];
+                    result.SetSatellite(i, key, value);
+                }
+            }
+            return result;
+        }
+
         public ICollection<int> CopyEdgesFrom(int id)
         {
             if (!Edges.HasNode(id))
@@ -84,16 +100,26 @@ namespace TorbuTils.Giraphe
             if (!Weights.ContainsKey((from, to))) return null;
             return Weights[(from, to)];
         }
+        public int GetEdgeQuantityBetween(int a, int b)
+        {
+            int quantity = 0;
+            if (Edges.HasEdge(a, b)) quantity++;
+            if (Edges.HasEdge(b, a)) quantity++;
+            return quantity;
+        }
+
 
         private class Edgees
         {
             private readonly Dictionary<int, HashSet<int>> edges = new();
             internal int NodeCount { get; private set; }
 
-            internal ICollection<int> GetNodes() => edges.Keys;
             internal bool HasNode(int id) => edges.ContainsKey(id);
+            internal bool HasEdge(int from, int to)
+                => edges.ContainsKey(from) && edges[from].Contains(to);
+            internal ICollection<int> GetNodes() => edges.Keys;
             internal ICollection<int> GetNodeEdges(int id) => edges[id];
-            public void Connect(int from, int to)
+            internal void Connect(int from, int to)
             {
                 if (!edges.ContainsKey(from))
                 {
@@ -102,7 +128,7 @@ namespace TorbuTils.Giraphe
                 }
                 edges[from].Add(to);
             }
-            public void Disconnect(int from, int to)
+            internal void Disconnect(int from, int to)
             {
                 if (edges.ContainsKey(from))
                 {

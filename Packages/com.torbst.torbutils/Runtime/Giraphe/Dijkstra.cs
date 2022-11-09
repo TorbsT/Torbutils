@@ -21,7 +21,7 @@ namespace TorbuTils.Giraphe
         }
         public IEnumerable Solve()
         {
-            ResultTree = new();
+            ResultTree = Graph.MakeFromSatellites(inputGraph);
             Queue<int> queue = new();  // ids
             queue.Enqueue(startId);
 
