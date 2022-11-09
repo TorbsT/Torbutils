@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TorbuTils.Girraph;
+using TorbuTils.Giraphe;
 using UnityEditor;
 
 public class DijkstraTest : MonoBehaviour
@@ -54,7 +54,7 @@ public class DijkstraTest : MonoBehaviour
 
     private void OnEnable()
     {
-        input = new(true);
+        input = new();
         for (int i = 0; i < nodeCount; i++)
         {
             Vector2 iPos = new Vector2(Random.value, Random.value);
