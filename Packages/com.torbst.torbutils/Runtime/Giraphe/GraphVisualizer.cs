@@ -44,13 +44,20 @@ namespace TorbuTils.Giraphe
         /// Color to use for bidirectional edges.
         /// </summary>
         [field: SerializeField] public Color BiEdgeColor { get; set; } = Color.yellow;
+        /// <summary>
+        /// Label nodes with their id, if it has neighbours
+        /// </summary>
+        [field: SerializeField] public bool DisplayIds { get; set; } = true;
+        /// <summary>
+        /// Label isolated nodes with their id
+        /// </summary>
+        [field: SerializeField] public bool DisplayIsolatedIds { get; set; } = true;
         
         /// <summary>
         /// The currently displayed graph.
         /// </summary>
         private Graph graph;
         [SerializeField] private bool debug = false;
-        [SerializeField] private List<Vector2Int> edgeVisualization = new();
 
         private void Awake()
         {
@@ -112,15 +119,16 @@ namespace TorbuTils.Giraphe
             for (int id = 0; id < graph.NodeCount; id++)
             {
                 float size;
-                if (graph.CopyEdgesFrom(id).Count > 0)
-                {
-                    Gizmos.color = NodeColor;
-                    size = NodeSize;
-                }
-                else
+                bool isolated = graph.CopyEdgesFrom(id).Count == 0;
+                if (isolated)
                 {
                     Gizmos.color = IsolatedNodeColor;
                     size = IsolatedNodeSize;
+                }
+                else
+                {
+                    Gizmos.color = NodeColor;
+                    size = NodeSize;
                 }
 
                 object posSat = graph.GetSatellite(id, "pos");
@@ -138,6 +146,13 @@ namespace TorbuTils.Giraphe
                 }
                 Vector2 pos = (Vector2)posSat;
                 Gizmos.DrawCube(pos, Vector3.one * size);
+
+                // Draw the node id in text
+                bool showId = (DisplayIds && !isolated) ^ (DisplayIsolatedIds && isolated); 
+                if (showId)
+                {
+                    Handles.Label(pos+Vector2.up*size, id.ToString());
+                }
             }
         }
         /// <summary>
@@ -147,12 +162,6 @@ namespace TorbuTils.Giraphe
         public void Checkout(Graph graph)
         {
             this.graph = graph;
-
-            edgeVisualization = new();
-            foreach ((int, int) edge in graph.CopyEdges())
-            {
-                edgeVisualization.Add(new(edge.Item1, edge.Item2));
-            }
         }
     }
     public interface IGraphVisualizerProvider

@@ -13,44 +13,9 @@ public class DijkstraTest : MonoBehaviour, IGraphVisualizerProvider
 
     private Dijkstra dijkstra;
     private Graph input;
-    private Graph output => dijkstra.ResultTree;
+    private Graph Output => dijkstra.ResultTree;
     IEnumerator cor;
-    /*
-    private void OnDrawGizmos()
-    {
-        if (!Application.isPlaying) return;
-        if (input == null) return;
-        Vector2 GetPos(int id) => (Vector2)input.GetSatellite(id, "pos");
 
-        Gizmos.color = Color.yellow;
-        for (int id = 0; id < input.NodeCount; id++)
-        {
-            Vector2 pos = GetPos(id);
-            Gizmos.DrawCube(pos, Vector3.one * 0.005f);
-            Handles.Label((Vector3)pos+Vector3.down*0.01f, id.ToString());
-        }
-        
-        if (showExistingEdges)
-        foreach ((int, int) edge in input.CopyEdges())
-        {
-            int from = edge.Item1;
-            int to = edge.Item2;
-
-            Gizmos.DrawLine(GetPos(from), GetPos(to));
-        }
-
-        if (dijkstra == null) return;
-        if (output == null) return;
-
-        Gizmos.color = Color.red;
-        foreach ((int, int) edge in output.CopyEdges())
-        {
-            int from = edge.Item1;
-            int to = edge.Item2;
-            Gizmos.DrawLine(GetPos(from), GetPos(to));
-        }
-    }
-    */
     private void OnEnable()
     {
         input = new();
@@ -78,6 +43,7 @@ public class DijkstraTest : MonoBehaviour, IGraphVisualizerProvider
             dijkstra = new(input, 0, maxSteps);
         dijkstra.Done += Done;
         cor = dijkstra.Solve().GetEnumerator();
+        GetComponent<GraphVisualizer>().Checkout(Output);
     }
     private void Update()
     {
@@ -91,6 +57,6 @@ public class DijkstraTest : MonoBehaviour, IGraphVisualizerProvider
     public Graph GetGraph(int graphId)
     {
         if (graphId == 0) return input;
-        return output;
+        return Output;
     }
 }

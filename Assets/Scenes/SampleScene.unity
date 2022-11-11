@@ -153,7 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fad17bf778b8a7444aba3a270ff9637e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GraphId>k__BackingField: 0
   <Mode>k__BackingField: 2
   <NodeSize>k__BackingField: 0.01
   <IsolatedNodeSize>k__BackingField: 0.01
@@ -161,6 +160,9 @@ MonoBehaviour:
   <IsolatedNodeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   <EdgeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   <BiEdgeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  <DisplayIds>k__BackingField: 1
+  <DisplayIsolatedIds>k__BackingField: 1
+  debug: 0
 --- !u!114 &388666836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,7 +323,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2

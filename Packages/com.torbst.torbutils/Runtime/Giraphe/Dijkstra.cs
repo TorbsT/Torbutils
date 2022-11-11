@@ -18,10 +18,10 @@ namespace TorbuTils.Giraphe
             this.inputGraph = inputGraph;
             this.startId = startId;
             this.maxDistance = maxDistance;
+            ResultTree = Graph.MakeFromSatellites(inputGraph);
         }
         public IEnumerable Solve()
         {
-            ResultTree = Graph.MakeFromSatellites(inputGraph);
             Queue<int> queue = new();  // ids
             queue.Enqueue(startId);
 
