@@ -24,6 +24,7 @@ namespace TorbuTils.Giraphe
         {
             Queue<int> queue = new();  // ids
             queue.Enqueue(startId);
+            ResultTree.SetSatellite(startId, "costhere", 0);
 
             while (queue.Count > 0)
             {

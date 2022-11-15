@@ -155,13 +155,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Mode>k__BackingField: 2
   <NodeSize>k__BackingField: 0.01
-  <IsolatedNodeSize>k__BackingField: 0.01
-  <NodeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  <IsolatedNodeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  <NodeColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
   <EdgeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  <BiEdgeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  <DisplayIds>k__BackingField: 1
-  <DisplayIsolatedIds>k__BackingField: 1
+  <OneDirectionalEdgeColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BiDirectionalEdgeColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <DisplayIds>k__BackingField: 0
+  <IsolatedNodesVisual>k__BackingField:
+    size: 1
+    display: 1
+    displayId: 1
+    color: {r: 0.735849, g: 0.23255605, b: 0.23255605, a: 0.4745098}
+    shape: 3
+  <SourceNodesVisual>k__BackingField:
+    size: 1
+    display: 1
+    displayId: 1
+    color: {r: 0.6766943, g: 0.8867924, b: 0.40574938, a: 1}
+    shape: 0
+  <SinkNodesVisual>k__BackingField:
+    size: 0.62
+    display: 1
+    displayId: 1
+    color: {r: 0.3726415, g: 0.49989286, b: 1, a: 1}
+    shape: 2
+  <PassthroughNodesVisual>k__BackingField:
+    size: 1
+    display: 1
+    displayId: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+    shape: 1
   debug: 0
 --- !u!114 &388666836
 MonoBehaviour:
@@ -177,8 +199,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edgeChance: 0.002
   showExistingEdges: 0
-  nodeCount: 1000
-  maxSteps: 3
+  nodeCount: 10000
+  maxSteps: -1
 --- !u!4 &388666837
 Transform:
   m_ObjectHideFlags: 0
@@ -187,7 +209,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388666834}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.53438354, y: 0.44353455, z: -4.1706038}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -498,7 +520,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1272328431}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.581368, y: 9.071659, z: -7.797393}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
