@@ -148,7 +148,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 358151680}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -177,7 +177,7 @@ GameObject:
   m_Component:
   - component: {fileID: 388666837}
   - component: {fileID: 388666836}
-  - component: {fileID: 388666835}
+  - component: {fileID: 388666838}
   m_Layer: 0
   m_Name: Giraphe
   m_TagString: Untagged
@@ -185,50 +185,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &388666835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388666834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fad17bf778b8a7444aba3a270ff9637e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <Mode>k__BackingField: 2
-  <NodeSize>k__BackingField: 0.01
-  <NodeColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
-  <EdgeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  <OneDirectionalEdgeColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
-  <BiDirectionalEdgeColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
-  <DisplayIds>k__BackingField: 0
-  <IsolatedNodesVisual>k__BackingField:
-    size: 1
-    display: 1
-    displayId: 1
-    color: {r: 0.735849, g: 0.23255605, b: 0.23255605, a: 0.4745098}
-    shape: 3
-  <SourceNodesVisual>k__BackingField:
-    size: 1
-    display: 1
-    displayId: 1
-    color: {r: 0.6766943, g: 0.8867924, b: 0.40574938, a: 1}
-    shape: 0
-  <SinkNodesVisual>k__BackingField:
-    size: 0.62
-    display: 1
-    displayId: 1
-    color: {r: 0.3726415, g: 0.49989286, b: 1, a: 1}
-    shape: 2
-  <PassthroughNodesVisual>k__BackingField:
-    size: 1
-    display: 1
-    displayId: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-    shape: 1
-  debug: 0
 --- !u!114 &388666836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,9 +197,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b76430229ca0974c93ea39d583ab22c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  edgeChance: 0.002
+  edgeChance: 0.4
   showExistingEdges: 0
-  nodeCount: 10000
+  nodeCount: 10
   maxSteps: -1
 --- !u!4 &388666837
 Transform:
@@ -260,6 +216,50 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &388666838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388666834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad17bf778b8a7444aba3a270ff9637e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Mode>k__BackingField: 2
+  <NodeSize>k__BackingField: 0.05
+  <NodeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  <EdgeColor>k__BackingField: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  <OneDirectionalEdgeColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BiDirectionalEdgeColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <DisplayIds>k__BackingField: 1
+  <IsolatedNodesVisual>k__BackingField:
+    size: 1
+    display: 1
+    displayId: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+    shape: 0
+  <SourceNodesVisual>k__BackingField:
+    size: 1
+    display: 1
+    displayId: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+    shape: 0
+  <SinkNodesVisual>k__BackingField:
+    size: 1
+    display: 1
+    displayId: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+    shape: 0
+  <PassthroughNodesVisual>k__BackingField:
+    size: 1
+    display: 1
+    displayId: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+    shape: 0
+  debug: 0
 --- !u!1 &731489578
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &731489579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,14 +292,15 @@ MonoBehaviour:
   <Noise>k__BackingField:
     <Seed>k__BackingField: 0
     <Octaves>k__BackingField: 5
-    <NoiseScale>k__BackingField: 8.38
-    <Persistence>k__BackingField: 0.79
-    <Lacunarity>k__BackingField: 3.43
+    <NoiseScale>k__BackingField: 1.43
+    <Persistence>k__BackingField: 0.7
+    <Lacunarity>k__BackingField: 2.4
   <Mode>k__BackingField: 0
   <MainColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
   <MarginColor>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
-  <LevelOfDetail>k__BackingField: 100
+  <LevelOfDetail>k__BackingField: 200
   <Margin>k__BackingField: 1
+  <VisualizedValuesRange>k__BackingField: {x: -1, y: 1}
 --- !u!4 &731489580
 Transform:
   m_ObjectHideFlags: 0
@@ -308,7 +309,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 731489578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.876, y: 0, z: -2.508}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

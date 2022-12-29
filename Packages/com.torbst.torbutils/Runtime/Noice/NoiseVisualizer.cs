@@ -15,19 +15,21 @@ namespace TorbuTils.Noice
         [field: SerializeField] public GizmosMode Mode { get; set; }
         [field: SerializeField] public Color MainColor { get; set; } = Color.white;
         [field: SerializeField] public Color MarginColor { get; set; } = Color.red;
+        [field: SerializeField] public int LevelOfDetail { get; set; } = 20;
+        [field: SerializeField] public int Margin { get; set; } = 0;
+        [field: SerializeField] public Vector2 VisualizedValuesRange { get; set; } = new(-1f, 1f);
         public Vector2 SampleStart => new
             (sampleStartTransform.position.x, sampleStartTransform.position.z);
         public Vector2 SampleEnd => new
             (sampleEndTransform.position.x, sampleEndTransform.position.z);
-        [field: SerializeField] public int LevelOfDetail { get; set; } = 20;
-        [field: SerializeField] public int Margin { get; set; } = 0;
 
         private Vector3[,] matrix;
         private Transform sampleStartTransform;
         private Transform sampleEndTransform;
-        private float averageNoise;
-        private float minNoise;
-        private float maxNoise;
+        private float noiseMin;
+        private float noiseMax;
+        private float noiseAVG;
+        private float noiseSTD;
 
         private void OnDrawGizmos()
         {
@@ -56,13 +58,20 @@ namespace TorbuTils.Noice
                 if (minNoise > y) minNoise = y;
                 if (maxNoise < y) maxNoise = y;
             }
-            averageNoise = float.MinValue;
+            noiseAVG = float.MinValue;
+            noiseSTD = float.MinValue;
             if (matrix.Length > 0)
             {
-                averageNoise = noiseSum/matrix.Length;
+                noiseAVG = noiseSum / matrix.Length;
+                float deviationSum = 0f;
+                foreach (var pos in matrix)
+                {
+                    deviationSum += Mathf.Abs(pos.y - noiseAVG);
+                }
+                noiseSTD = deviationSum / matrix.Length;
             }
-            this.minNoise = minNoise;
-            this.maxNoise = maxNoise;
+            noiseMin = minNoise;
+            noiseMax = maxNoise;
         }
         private void RedoSampleTransforms()
         {
@@ -114,7 +123,7 @@ namespace TorbuTils.Noice
                         z < Margin || z >= zLength - Margin)
                         color = MarginColor;
                     else color = MainColor;
-                    float y = pos.y;
+                    float y = Mathf.InverseLerp(VisualizedValuesRange.x, VisualizedValuesRange.y, pos.y);
                     Gizmos.color = new Color(y, y, y, 1f) * color;
                     Gizmos.DrawCube(new(pos.x, 0f, pos.z), boxSize);
                 }

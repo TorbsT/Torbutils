@@ -12,14 +12,14 @@ namespace TorbuTils.Giraphe
     public class Graph
     {
         /// <summary>
-        /// Approximate quantity of nodes. Use with caution.
+        /// Quantity of nodes that have ever been mentioned in edges or satellite data.
         /// </summary>
-        public int NodeCount => Mathf.Max(Edges.NodeCount, NodeSatellites.Count);
+        public int NodeCount => Nodes.Count;
         private Edgees Edges { get; set; } = new();
         private Edgees AntiEdges { get; set; } = new();  // improves time complexity of CopyEdgesTo
         private Dictionary<(int, int), int> Weights { get; set; } = new();
         private Dictionary<int, Dictionary<string, object>> NodeSatellites { get; set; } = new();
-
+        private HashSet<int> Nodes { get; set; } = new();
 
         /// <summary>
         /// Creates a new Graph object with a
@@ -38,6 +38,21 @@ namespace TorbuTils.Giraphe
                     object value = inputGraph.NodeSatellites[i][key];
                     result.SetSatellite(i, key, value);
                 }
+            }
+            return result;
+        }
+        
+        /// <summary>
+        /// Gets a copy of every node in this graph.
+        /// A node is defined either though edges or satellite data.
+        /// </summary>
+        /// <returns>A collection of node IDs</returns>
+        public ICollection<int> CopyNodes()
+        {
+            HashSet<int> result = new();
+            foreach (int id in Nodes)
+            {
+                result.Add(id);
             }
             return result;
         }
@@ -126,6 +141,8 @@ namespace TorbuTils.Giraphe
             Edges.Connect(from, to);
             AntiEdges.Connect(to, from);
             SetWeight(from, to, weight);
+            if (!Nodes.Contains(from)) Nodes.Add(from);
+            if (!Nodes.Contains(to)) Nodes.Add(to);
         }
         /// <summary>
         /// Removes the given edge from this graph.
@@ -165,6 +182,7 @@ namespace TorbuTils.Giraphe
         public void SetSatellite(int id, string satelliteName, object value)
         {
             if (!NodeSatellites.ContainsKey(id)) NodeSatellites[id] = new();
+            if (!Nodes.Contains(id)) Nodes.Add(id);
             NodeSatellites[id][satelliteName] = value;
         }
         /// <summary>
