@@ -15,6 +15,7 @@ namespace TorbuTils.Giraphe
         /// Quantity of nodes that have ever been mentioned in edges or satellite data.
         /// </summary>
         public int NodeCount => Nodes.Count;
+        public string Name { get; set; }
         private Edgees Edges { get; set; } = new();
         private Edgees AntiEdges { get; set; } = new();  // improves time complexity of CopyEdgesTo
         private Dictionary<(int, int), int> Weights { get; set; } = new();

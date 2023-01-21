@@ -2,16 +2,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace TorbuTils
+namespace TorbuTils.EzPools
 {
-    namespace EzPools
+    public class Pool : MonoBehaviour
     {
-        public class Pool : MonoBehaviour
-        {
-            internal GameObject Prefab { get; set; }
-            internal Queue<GameObject> Queue { get; private set; } = new();
-            internal int LocalCount { get; set; } = 0;
-        }
+        internal GameObject Prefab { get; set; }
+        internal Queue<GameObject> Queue { get; private set; } = new();
+        internal int LocalCount { get; set; } = 0;
     }
 }
 

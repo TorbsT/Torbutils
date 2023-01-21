@@ -39,7 +39,6 @@ namespace TorbuTils.Giraphe
                     int? prevCost = (int?)ResultTree.GetSatellite(next, "costhere");
                     if (prevCost == null || hypoCost < prevCost)
                     {
-
                         if (prevCost != null)
                         {
                             foreach (int backtrack in ResultTree.CopyEdgesTo(next))
