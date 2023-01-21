@@ -141,7 +141,8 @@ namespace TorbuTils.Anime
 
         internal void Finished()
         {
-            OnFinishAction(this);
+            if (OnFinishAction != null)
+                OnFinishAction(this);
             JustFinished?.Invoke(this);
         }
     }
