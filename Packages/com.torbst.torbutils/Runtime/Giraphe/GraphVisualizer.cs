@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace TorbuTils.Giraphe
 {
@@ -63,10 +64,15 @@ namespace TorbuTils.Giraphe
         [field: SerializeField] public NodeVisual SinkNodesVisual { get; private set; } = new();
         [field: SerializeField] public NodeVisual PassthroughNodesVisual { get; private set; }
             = new();
+        [field: SerializeField] public int HeatmapColdestCosthere = 10;
+        [field: SerializeField] public Color HeatmapHottestColor = Color.red;
+        [field: SerializeField] public Color HeatmapColdestColor = Color.green;
         [field: SerializeField] public string displayPositionSatellite
         { get; private set; } = "pos";
         [field: SerializeField] public string displayColorOverrideSatellite
         { get; private set; } = "color";
+        [field: SerializeField] public string displayHeatmapOverrideSatellite
+        { get; private set; } = "costhere";
         
         [Header("DEBUG")]
         [SerializeField] private bool debug = false;
@@ -78,7 +84,11 @@ namespace TorbuTils.Giraphe
         /// Displays a graph.
         /// </summary>
         /// <param name="graph">The graph that will be displayed</param>
-        public void Checkout(Graph graph)
+        public void Set(Graph graph)
+        {
+            this.graph = graph;
+        }
+        [Obsolete] public void Checkout(Graph graph)
         {
             this.graph = graph;
         }
@@ -168,14 +178,24 @@ namespace TorbuTils.Giraphe
 
                 Color nodeColor = visual.color * NodeColor;
                 object colorSat = graph.GetSatellite(id, displayColorOverrideSatellite);
+                object costhereSat = graph.GetSatellite(id, displayHeatmapOverrideSatellite);
                 // color satellite will override color on this node.
                 if (colorSat != null)
                 {
-                    if (colorSat is Color) nodeColor = (Color)colorSat;
+                    if (colorSat is Color color) nodeColor = color;
                     else Debug.LogWarning(
                         $"Satellite info ({displayColorOverrideSatellite})" +
                         $" is not castable to Color." +
                         $" sat = ({colorSat}), id = {id}");
+                } else if (costhereSat != null)
+                {
+                    if (costhereSat is float costhere)
+                        nodeColor = Color.Lerp(HeatmapHottestColor, HeatmapColdestColor,
+                            (float)costhere / HeatmapColdestCosthere);
+                    else Debug.LogWarning(
+                        $"Satellite info ({displayHeatmapOverrideSatellite})" +
+                        $" is not castable to float." +
+                        $" sat = ({costhereSat}), id = {id}");
                 }
                 Gizmos.color = nodeColor;
 
