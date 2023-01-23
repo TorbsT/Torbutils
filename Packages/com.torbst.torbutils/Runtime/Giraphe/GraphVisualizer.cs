@@ -189,7 +189,7 @@ namespace TorbuTils.Giraphe
                         $" sat = ({colorSat}), id = {id}");
                 } else if (costhereSat != null)
                 {
-                    if (costhereSat is float costhere)
+                    if (costhereSat is int costhere)
                         nodeColor = Color.Lerp(HeatmapHottestColor, HeatmapColdestColor,
                             (float)costhere / HeatmapColdestCosthere);
                     else Debug.LogWarning(

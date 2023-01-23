@@ -5,7 +5,7 @@ using System;
 
 namespace TorbuTils.Giraphe
 {
-    public class MultiDijkstra : MonoBehaviour
+    public class MultiDijkstra
     {
         public event Action Done;
         private readonly Graph inputGraph;
