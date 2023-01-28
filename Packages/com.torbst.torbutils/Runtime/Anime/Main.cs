@@ -6,7 +6,7 @@ namespace TorbuTils.Anime
 {
     internal class Main : MonoBehaviour
     {
-        internal static Main Instance { get; private set; }
+        public static Main Instance { get; private set; }
 
         private void Awake()
         {

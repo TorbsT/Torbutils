@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
@@ -12,7 +11,7 @@ namespace TorbuTils.Giraphe
     {
         public event Action Done;
         private readonly Graph inputGraph;
-        [field: SerializeField] public Graph ResultTree { get; private set; }
+        public Graph ResultTree { get; private set; }
         public GraphCompleter(Graph inputGraph)
         {
             this.inputGraph = inputGraph;
@@ -20,7 +19,7 @@ namespace TorbuTils.Giraphe
         }
         public IEnumerable Solve()
         {
-            ICollection<int> nodes = ResultTree.CopyNodes();
+            ICollection<int> nodes = inputGraph.CopyNodes();
             foreach (int idA in nodes)
             {
                 foreach (int idB in nodes)

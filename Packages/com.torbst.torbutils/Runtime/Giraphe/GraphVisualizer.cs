@@ -64,15 +64,11 @@ namespace TorbuTils.Giraphe
         [field: SerializeField] public NodeVisual SinkNodesVisual { get; private set; } = new();
         [field: SerializeField] public NodeVisual PassthroughNodesVisual { get; private set; }
             = new();
+        [field: SerializeField] public int HeatmapHottestCosthere = 0;
         [field: SerializeField] public int HeatmapColdestCosthere = 10;
         [field: SerializeField] public Color HeatmapHottestColor = Color.red;
         [field: SerializeField] public Color HeatmapColdestColor = Color.green;
-        [field: SerializeField] public string displayPositionSatellite
-        { get; private set; } = "pos";
-        [field: SerializeField] public string displayColorOverrideSatellite
-        { get; private set; } = "color";
-        [field: SerializeField] public string displayHeatmapOverrideSatellite
-        { get; private set; } = "costhere";
+
         
         [Header("DEBUG")]
         [SerializeField] private bool debug = false;
@@ -130,12 +126,12 @@ namespace TorbuTils.Giraphe
                 else
                     Gizmos.color = EdgeColor * OneDirectionalEdgeColor;
 
-                object fromPosSat = graph.GetSatellite(from, displayPositionSatellite);
-                object toPosSat = graph.GetSatellite(to, displayPositionSatellite);
+                object fromPosSat = graph.GetSatellite(from, Settings.PositionSatellite);
+                object toPosSat = graph.GetSatellite(to, Settings.PositionSatellite);
                 if (fromPosSat == null || toPosSat == null)
                 {
                     Debug.LogWarning(
-                        $"Satellite info ({displayPositionSatellite})" +
+                        $"Satellite info ({Settings.PositionSatellite})" +
                         $" doesn't exist, can't visualize positions of edge." +
                         $" fromSat = ({fromPosSat}), toSat = ({toPosSat}). " +
                         $" fromId = {from}, toId = {to}");
@@ -144,7 +140,7 @@ namespace TorbuTils.Giraphe
                 if (fromPosSat is not Vector2 || toPosSat is not Vector2)
                 {
                     Debug.LogWarning(
-                        $"Satellite info ({displayPositionSatellite})" +
+                        $"Satellite info ({Settings.PositionSatellite})" +
                         $" is not castable to Vector2.'" +
                         $" fromSat = ({fromPosSat}), toSat = ({toPosSat})." +
                         $" fromId = {from}, toId = {to}");
@@ -177,33 +173,33 @@ namespace TorbuTils.Giraphe
                 if (!visual.display) continue;
 
                 Color nodeColor = visual.color * NodeColor;
-                object colorSat = graph.GetSatellite(id, displayColorOverrideSatellite);
-                object costhereSat = graph.GetSatellite(id, displayHeatmapOverrideSatellite);
+                object colorSat = graph.GetSatellite(id, Settings.ColorSatellite);
+                object costhereSat = graph.GetSatellite(id, Settings.CostSatellite);
                 // color satellite will override color on this node.
                 if (colorSat != null)
                 {
                     if (colorSat is Color color) nodeColor = color;
                     else Debug.LogWarning(
-                        $"Satellite info ({displayColorOverrideSatellite})" +
+                        $"Satellite info ({Settings.ColorSatellite})" +
                         $" is not castable to Color." +
                         $" sat = ({colorSat}), id = {id}");
                 } else if (costhereSat != null)
                 {
                     if (costhereSat is int costhere)
                         nodeColor = Color.Lerp(HeatmapHottestColor, HeatmapColdestColor,
-                            (float)costhere / HeatmapColdestCosthere);
+                            (float)costhere / (HeatmapColdestCosthere-HeatmapHottestCosthere));
                     else Debug.LogWarning(
-                        $"Satellite info ({displayHeatmapOverrideSatellite})" +
+                        $"Satellite info ({Settings.CostSatellite})" +
                         $" is not castable to float." +
                         $" sat = ({costhereSat}), id = {id}");
                 }
                 Gizmos.color = nodeColor;
 
-                object posSat = graph.GetSatellite(id, displayPositionSatellite);
+                object posSat = graph.GetSatellite(id, Settings.PositionSatellite);
                 if (posSat == null)
                 {
                     Debug.LogWarning(
-                        $"Satellite info ({displayPositionSatellite})" +
+                        $"Satellite info ({Settings.PositionSatellite})" +
                         $" doesn't exist, can't visualize node position." +
                         $" sat = ({posSat}), id = ({id})");
                     continue;
@@ -211,7 +207,7 @@ namespace TorbuTils.Giraphe
                 if (posSat is not Vector2)
                 {
                     Debug.LogWarning(
-                        $"Satellite info ({displayPositionSatellite})" +
+                        $"Satellite info ({Settings.PositionSatellite})" +
                         $" is not castable to Vector2.'" +
                         $" sat = ({posSat}), id = ({id})");
                     continue;

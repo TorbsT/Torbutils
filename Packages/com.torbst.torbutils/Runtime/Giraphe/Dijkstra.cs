@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 
 namespace TorbuTils.Giraphe
@@ -12,7 +11,7 @@ namespace TorbuTils.Giraphe
         private readonly Graph inputGraph;
         private readonly int startId;
         private readonly int maxDistance;
-        [field: SerializeField] public Graph ResultTree { get; private set; }
+        public Graph ResultTree { get; private set; }
         public Dijkstra(Graph inputGraph, int startId, int maxDistance = int.MaxValue)
         {
             this.inputGraph = inputGraph;
@@ -24,19 +23,19 @@ namespace TorbuTils.Giraphe
         {
             Queue<int> queue = new();  // ids
             queue.Enqueue(startId);
-            ResultTree.SetSatellite(startId, "costhere", 0);
+            ResultTree.SetSatellite(startId, Settings.CostSatellite, 0);
 
             while (queue.Count > 0)
             {
                 int current = queue.Dequeue();
-                int? ch = (int?)ResultTree.GetSatellite(current, "costhere");
+                int? ch = (int?)ResultTree.GetSatellite(current, Settings.CostSatellite);
                 int costHere = ch == null ? 0 : ch.Value;
                 foreach (int next in inputGraph.CopyEdgesFrom(current))
                 {
                     yield return null;
                     int hypoCost = costHere + (int)inputGraph.GetWeight(current, next);
                     if (hypoCost > maxDistance) continue;
-                    int? prevCost = (int?)ResultTree.GetSatellite(next, "costhere");
+                    int? prevCost = (int?)ResultTree.GetSatellite(next, Settings.CostSatellite);
                     if (prevCost == null || hypoCost < prevCost)
                     {
                         if (prevCost != null)
@@ -48,7 +47,7 @@ namespace TorbuTils.Giraphe
                         }
 
                         ResultTree.AddEdge(current, next);
-                        ResultTree.SetSatellite(next, "costhere", hypoCost);
+                        ResultTree.SetSatellite(next, Settings.CostSatellite, hypoCost);
                         queue.Enqueue(next);
                     }
                 }
