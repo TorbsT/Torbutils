@@ -58,6 +58,7 @@ namespace TorbuTils.Giraphe
         /// Label nodes with their id, at all
         /// </summary>
         [field: SerializeField] public bool DisplayIds { get; set; } = true;
+        [field: SerializeField] public bool DisplayCosts { get; set; } = true;
 
         [field: SerializeField] public NodeVisual IsolatedNodesVisual { get; private set; } = new();
         [field: SerializeField] public NodeVisual SourceNodesVisual { get; private set; } = new();
@@ -227,9 +228,13 @@ namespace TorbuTils.Giraphe
 
                 // Draw the node id in text
                 bool showId = DisplayIds && visual.displayId;
-                if (showId)
+                bool showCost = DisplayCosts && costhereSat != null;
+                if (showId || showCost)
                 {
-                    Handles.Label(pos + Vector2.up * size, id.ToString());
+                    List<string> txt = new();
+                    if (showId) txt.Add(id.ToString());
+                    if (showCost) txt.Add(costhereSat.ToString());
+                    Handles.Label(pos + Vector2.up * size, string.Join(", ", txt));
                 }
             }
         }

@@ -19,6 +19,10 @@ namespace TorbuTils.Giraphe
         public IEnumerable Solve()
         {
             ICollection<int> nodes = inputGraph.CopyNodes();
+            ICollection<(int, int)> edges = inputGraph.CopyEdges();
+            foreach ((int, int) edge in edges)
+                ResultGraph.AddEdge(edge.Item1, edge.Item2);
+
             foreach (int id in nodes)
             {
                 Dijkstra dijkstra = new(inputGraph, id);

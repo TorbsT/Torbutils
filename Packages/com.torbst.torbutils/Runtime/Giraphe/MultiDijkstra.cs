@@ -26,21 +26,21 @@ namespace TorbuTils.Giraphe
             {
                 int tileId = hotspot.Item1;
                 int costhere = hotspot.Item2;
-                ResultGraph.SetSatellite(tileId, "costhere", costhere);
+                ResultGraph.SetSatellite(tileId, Settings.CostSatellite, costhere);
                 queue.Enqueue(tileId);
             }
 
             while (queue.Count > 0)
             {
                 int current = queue.Dequeue();
-                int? ch = (int?)ResultGraph.GetSatellite(current, "costhere");
+                int? ch = (int?)ResultGraph.GetSatellite(current, Settings.CostSatellite);
                 int costHere = ch == null ? 0 : ch.Value;
                 foreach (int next in inputGraph.CopyEdgesFrom(current))
                 {
                     yield return null;
                     int hypoCost = costHere + (int)inputGraph.GetWeight(current, next);
                     if (hypoCost > maxDistance) continue;
-                    int? prevCost = (int?)ResultGraph.GetSatellite(next, "costhere");
+                    int? prevCost = (int?)ResultGraph.GetSatellite(next, Settings.CostSatellite);
                     if (prevCost == null || hypoCost < prevCost)
                     {
                         if (prevCost != null)
@@ -52,7 +52,7 @@ namespace TorbuTils.Giraphe
                         }
 
                         ResultGraph.AddEdge(current, next);
-                        ResultGraph.SetSatellite(next, "costhere", hypoCost);
+                        ResultGraph.SetSatellite(next, Settings.CostSatellite, hypoCost);
                         queue.Enqueue(next);
                     }
                 }
