@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 using UnityEngine;
 using System.Collections.Generic;
 using System;
@@ -89,6 +91,7 @@ namespace TorbuTils.Giraphe
         {
             this.graph = graph;
         }
+        #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             if (Mode == GizmosMode.Always) DoGizmos();
@@ -238,6 +241,7 @@ namespace TorbuTils.Giraphe
                 }
             }
         }
+        #endif
     }
     public interface IGraphVisualizerProvider
     {
