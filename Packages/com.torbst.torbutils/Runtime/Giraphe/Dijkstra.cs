@@ -5,32 +5,32 @@ using System;
 namespace TorbuTils.Giraphe
 {
     [Serializable]
-    public class Dijkstra
+    public class Dijkstra<T>
     {
         public event Action Done;
-        private readonly Graph inputGraph;
-        private readonly int startId;
+        private readonly Graph<T> inputGraph;
+        private readonly T startNode;
         private readonly int maxDistance;
-        public Graph ResultTree { get; private set; }
-        public Dijkstra(Graph inputGraph, int startId, int maxDistance = int.MaxValue)
+        public Graph<T> ResultTree { get; private set; }
+        public Dijkstra(Graph<T> inputGraph, T startNode, int maxDistance = int.MaxValue)
         {
             this.inputGraph = inputGraph;
-            this.startId = startId;
+            this.startNode = startNode;
             this.maxDistance = maxDistance;
-            ResultTree = Graph.MakeFromSatellites(inputGraph);
+            ResultTree = Graph<T>.MakeFromSatellites(inputGraph);
         }
         public IEnumerable Solve()
         {
-            Queue<int> queue = new();  // ids
-            queue.Enqueue(startId);
-            ResultTree.SetSatellite(startId, Settings.CostSatellite, 0);
+            Queue<T> queue = new();  // ids
+            queue.Enqueue(startNode);
+            ResultTree.SetSatellite(startNode, Settings.CostSatellite, 0);
 
             while (queue.Count > 0)
             {
-                int current = queue.Dequeue();
+                T current = queue.Dequeue();
                 int? ch = (int?)ResultTree.GetSatellite(current, Settings.CostSatellite);
                 int costHere = ch == null ? 0 : ch.Value;
-                foreach (int next in inputGraph.CopyEdgesFrom(current))
+                foreach (T next in inputGraph.CopyEdgesFrom(current))
                 {
                     yield return null;
                     int hypoCost = costHere + (int)inputGraph.GetWeight(current, next);
@@ -40,7 +40,7 @@ namespace TorbuTils.Giraphe
                     {
                         if (prevCost != null)
                         {
-                            foreach (int backtrack in ResultTree.CopyEdgesTo(next))
+                            foreach (T backtrack in ResultTree.CopyEdgesTo(next))
                             {
                                 ResultTree.RemoveEdge(backtrack, next);
                             }

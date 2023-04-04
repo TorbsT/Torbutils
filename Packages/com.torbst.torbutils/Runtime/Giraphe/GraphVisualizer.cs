@@ -7,7 +7,7 @@ using System;
 
 namespace TorbuTils.Giraphe
 {
-    public class GraphVisualizer : MonoBehaviour
+    public class GraphVisualizer<T> : MonoBehaviour
     {
         [System.Serializable]
         public class NodeVisual
@@ -78,16 +78,16 @@ namespace TorbuTils.Giraphe
         /// <summary>
         /// The currently displayed graph.
         /// </summary>
-        private Graph graph;
+        private Graph<T> graph;
         /// <summary>
         /// Displays a graph.
         /// </summary>
         /// <param name="graph">The graph that will be displayed</param>
-        public void Set(Graph graph)
+        public void Set(Graph<T> graph)
         {
             this.graph = graph;
         }
-        [Obsolete] public void Checkout(Graph graph)
+        [Obsolete] public void Checkout(Graph<T> graph)
         {
             this.graph = graph;
         }
@@ -121,48 +121,58 @@ namespace TorbuTils.Giraphe
         private void DrawEdges()
         {
             // Draw edges
-            foreach ((int, int) edge in graph.CopyEdges())
+            foreach ((T, T) edge in graph.CopyEdges())
             {
-                int from = edge.Item1;
-                int to = edge.Item2;
+                T from = edge.Item1;
+                T to = edge.Item2;
                 if (graph.GetEdgeQuantityBetween(from, to) == 2)
                     Gizmos.color = EdgeColor * BiDirectionalEdgeColor;
                 else
                     Gizmos.color = EdgeColor * OneDirectionalEdgeColor;
 
-                object fromPosSat = graph.GetSatellite(from, Settings.PositionSatellite);
-                object toPosSat = graph.GetSatellite(to, Settings.PositionSatellite);
-                if (fromPosSat == null || toPosSat == null)
-                {
-                    Debug.LogWarning(
-                        $"Satellite info ({Settings.PositionSatellite})" +
-                        $" doesn't exist, can't visualize positions of edge." +
-                        $" fromSat = ({fromPosSat}), toSat = ({toPosSat}). " +
-                        $" fromId = {from}, toId = {to}");
-                    continue;
-                }
-                if (fromPosSat is not Vector2 || toPosSat is not Vector2)
-                {
-                    Debug.LogWarning(
-                        $"Satellite info ({Settings.PositionSatellite})" +
-                        $" is not castable to Vector2.'" +
-                        $" fromSat = ({fromPosSat}), toSat = ({toPosSat})." +
-                        $" fromId = {from}, toId = {to}");
-                    continue;
-                }
-
-                Vector2 fromPos = (Vector2)fromPosSat;
-                Vector2 toPos = (Vector2)toPosSat;
+                (Vector3, Vector3)? tuple = GetLinePoses(from, to);
+                if (tuple == null) continue;
+                Vector3 fromPos = tuple.Value.Item1;
+                Vector3 toPos = tuple.Value.Item2;
                 Gizmos.DrawLine(fromPos, toPos);
             }
+        }
+        protected virtual (Vector3, Vector3)? GetLinePoses(T from, T to)
+        {
+            return GetLinePosesFromSatellites(from, to);
+        }
+        protected (Vector3, Vector3)? GetLinePosesFromSatellites(T from, T to)
+        {
+            object fromPosSat = graph.GetSatellite(from, Settings.PositionSatellite);
+            object toPosSat = graph.GetSatellite(to, Settings.PositionSatellite);
+            if (fromPosSat == null || toPosSat == null)
+            {
+                Debug.LogWarning(
+                    $"Satellite info ({Settings.PositionSatellite})" +
+                    $" doesn't exist, can't visualize positions of edge." +
+                    $" fromSat = ({fromPosSat}), toSat = ({toPosSat}). " +
+                    $" fromId = {from}, toId = {to}");
+                return null;
+            }
+            if (fromPosSat is Vector2 fromPos2 && toPosSat is Vector2 toPos2)
+                return (fromPos2, toPos2);
+            if (fromPosSat is Vector3 fromPos3 && toPosSat is Vector3 toPos3)
+                return (fromPos3, toPos3);
+
+            Debug.LogWarning(
+                $"Satellite info ({Settings.PositionSatellite})" +
+                $" is not castable to Vector2.'" +
+                $" fromSat = ({fromPosSat}), toSat = ({toPosSat})." +
+                $" fromId = {from}, toId = {to}");
+            return null;
         }
         private void DrawNodes()
         {
             // Draw nodes
-            for (int id = 0; id < graph.NodeCount; id++)
+            foreach (T node in graph.CopyNodes())
             {
-                bool isSource = graph.GetEdgesCountFrom(id) > 0;
-                bool isSink = graph.GetEdgesCountTo(id) > 0;
+                bool isSource = graph.GetEdgesCountFrom(node) > 0;
+                bool isSink = graph.GetEdgesCountTo(node) > 0;
 
                 NodeVisual visual;
                 if (!isSource && !isSink)
@@ -177,8 +187,8 @@ namespace TorbuTils.Giraphe
                 if (!visual.display) continue;
 
                 Color nodeColor = visual.color * NodeColor;
-                object colorSat = graph.GetSatellite(id, Settings.ColorSatellite);
-                object costhereSat = graph.GetSatellite(id, Settings.CostSatellite);
+                object colorSat = graph.GetSatellite(node, Settings.ColorSatellite);
+                object costhereSat = graph.GetSatellite(node, Settings.CostSatellite);
                 // color satellite will override color on this node.
                 if (colorSat != null)
                 {
@@ -186,7 +196,7 @@ namespace TorbuTils.Giraphe
                     else Debug.LogWarning(
                         $"Satellite info ({Settings.ColorSatellite})" +
                         $" is not castable to Color." +
-                        $" sat = ({colorSat}), id = {id}");
+                        $" sat = ({colorSat}), id = {node}");
                 } else if (costhereSat != null)
                 {
                     if (costhereSat is int costhere)
@@ -195,17 +205,17 @@ namespace TorbuTils.Giraphe
                     else Debug.LogWarning(
                         $"Satellite info ({Settings.CostSatellite})" +
                         $" is not castable to float." +
-                        $" sat = ({costhereSat}), id = {id}");
+                        $" sat = ({costhereSat}), id = {node}");
                 }
                 Gizmos.color = nodeColor;
 
-                object posSat = graph.GetSatellite(id, Settings.PositionSatellite);
+                object posSat = graph.GetSatellite(node, Settings.PositionSatellite);
                 if (posSat == null)
                 {
                     Debug.LogWarning(
                         $"Satellite info ({Settings.PositionSatellite})" +
                         $" doesn't exist, can't visualize node position." +
-                        $" sat = ({posSat}), id = ({id})");
+                        $" sat = ({posSat}), id = ({node})");
                     continue;
                 }
                 if (posSat is not Vector2)
@@ -213,7 +223,7 @@ namespace TorbuTils.Giraphe
                     Debug.LogWarning(
                         $"Satellite info ({Settings.PositionSatellite})" +
                         $" is not castable to Vector2.'" +
-                        $" sat = ({posSat}), id = ({id})");
+                        $" sat = ({posSat}), id = ({node})");
                     continue;
                 }
 
@@ -235,7 +245,7 @@ namespace TorbuTils.Giraphe
                 if (showId || showCost)
                 {
                     List<string> txt = new();
-                    if (showId) txt.Add(id.ToString());
+                    if (showId) txt.Add(node.ToString());
                     if (showCost) txt.Add(costhereSat.ToString());
                     Handles.Label(pos + Vector2.up * size, string.Join(", ", txt));
                 }
@@ -243,8 +253,8 @@ namespace TorbuTils.Giraphe
         }
         #endif
     }
-    public interface IGraphVisualizerProvider
+    public interface IGraphVisualizerProvider<T>
     {
-        Graph GetGraph(int graphId);
+        Graph<T> GetGraph(int graphId);
     }
 }

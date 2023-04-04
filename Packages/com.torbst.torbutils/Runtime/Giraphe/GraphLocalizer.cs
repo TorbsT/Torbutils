@@ -6,40 +6,40 @@ using System.Diagnostics;
 
 namespace TorbuTils.Giraphe
 {
-    public class GraphLocalizer
+    public class GraphLocalizer<T>
     {
         public event Action Done;
-        private readonly Graph inputGraph;
-        public Graph ResultGraph { get; private set; }
-        public GraphLocalizer(Graph inputGraph)
+        private readonly Graph<T> inputGraph;
+        public Graph<T> ResultGraph { get; private set; }
+        public GraphLocalizer(Graph<T> inputGraph)
         {
             this.inputGraph = inputGraph;
-            ResultGraph = Graph.MakeFromSatellites(inputGraph);
+            ResultGraph = Graph<T>.MakeFromSatellites(inputGraph);
         }
         public IEnumerable Solve()
         {
-            ICollection<int> nodes = inputGraph.CopyNodes();
-            ICollection<(int, int)> edges = inputGraph.CopyEdges();
-            foreach ((int, int) edge in edges)
+            ICollection<T> nodes = inputGraph.CopyNodes();
+            ICollection<(T, T)> edges = inputGraph.CopyEdges();
+            foreach ((T, T) edge in edges)
                 ResultGraph.AddEdge(edge.Item1, edge.Item2);
 
-            foreach (int id in nodes)
+            foreach (T node in nodes)
             {
-                Dijkstra dijkstra = new(inputGraph, id);
+                Dijkstra<T> dijkstra = new(inputGraph, node);
                 foreach (var _ in dijkstra.Solve()) yield return null;
-                foreach (int i in dijkstra.ResultTree.CopyNodes())
+                foreach (T n in dijkstra.ResultTree.CopyNodes())
                 {
-                    object sat = dijkstra.ResultTree.GetSatellite(i, Settings.CostSatellite);
+                    object sat = dijkstra.ResultTree.GetSatellite(n, Settings.CostSatellite);
                     if (sat is int costHere)
                     {
-                        object resultSat = ResultGraph.GetSatellite(i, Settings.CostSatellite);
+                        object resultSat = ResultGraph.GetSatellite(n, Settings.CostSatellite);
                         if (resultSat == null)
                         {
-                            ResultGraph.SetSatellite(i, Settings.CostSatellite, 0);
+                            ResultGraph.SetSatellite(n, Settings.CostSatellite, 0);
                             resultSat = 0;
                         }
                         int newCost = costHere + (int)resultSat;
-                        ResultGraph.SetSatellite(i, Settings.CostSatellite, newCost);
+                        ResultGraph.SetSatellite(n, Settings.CostSatellite, newCost);
                     }
                     yield return null;
                 }

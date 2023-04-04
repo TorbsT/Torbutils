@@ -4,16 +4,16 @@ using UnityEngine;
 using TorbuTils.Giraphe;
 using UnityEditor;
 
-public class DijkstraTest : MonoBehaviour, IGraphVisualizerProvider
+public class DijkstraTest : MonoBehaviour, IGraphVisualizerProvider<int>
 {
     [Range(0f, 1f)] public float edgeChance = 0.2f;
     public bool showExistingEdges;
     public int nodeCount = 10;
     public int maxSteps = -1;
 
-    private Dijkstra dijkstra;
-    private Graph input;
-    private Graph Output => dijkstra.ResultTree;
+    private Dijkstra<int> dijkstra;
+    private Graph<int> input;
+    private Graph<int> Output => dijkstra.ResultTree;
     IEnumerator cor;
 
     private void OnEnable()
@@ -43,7 +43,7 @@ public class DijkstraTest : MonoBehaviour, IGraphVisualizerProvider
             dijkstra = new(input, 0, maxSteps);
         dijkstra.Done += Done;
         cor = dijkstra.Solve().GetEnumerator();
-        GetComponent<GraphVisualizer>().Checkout(Output);
+        //GetComponent<GraphVisualizer>().Checkout(Output);
     }
     private void Update()
     {
@@ -54,7 +54,7 @@ public class DijkstraTest : MonoBehaviour, IGraphVisualizerProvider
     {
         Debug.Log("Done!");
     }
-    public Graph GetGraph(int graphId)
+    public Graph<int> GetGraph(int graphId)
     {
         if (graphId == 0) return input;
         return Output;

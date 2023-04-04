@@ -7,25 +7,25 @@ using System.Collections;
 
 namespace TorbuTils.Giraphe
 {
-    public class GraphCompleter
+    public class GraphCompleter<T>
     {
         public event Action Done;
-        private readonly Graph inputGraph;
-        public Graph ResultTree { get; private set; }
-        public GraphCompleter(Graph inputGraph)
+        private readonly Graph<T> inputGraph;
+        public Graph<T> ResultTree { get; private set; }
+        public GraphCompleter(Graph<T> inputGraph)
         {
             this.inputGraph = inputGraph;
-            ResultTree = Graph.MakeFromSatellites(inputGraph);
+            ResultTree = Graph<T>.MakeFromSatellites(inputGraph);
         }
         public IEnumerable Solve()
         {
-            ICollection<int> nodes = inputGraph.CopyNodes();
-            foreach (int idA in nodes)
+            ICollection<T> nodes = inputGraph.CopyNodes();
+            foreach (T nodeA in nodes)
             {
-                foreach (int idB in nodes)
+                foreach (T nodeB in nodes)
                 {
-                    if (idA == idB) continue;
-                    ResultTree.AddEdge(idA, idB);
+                    if (nodeA.Equals(nodeB)) continue;
+                    ResultTree.AddEdge(nodeA, nodeB);
                     yield return null;
                 }
             }

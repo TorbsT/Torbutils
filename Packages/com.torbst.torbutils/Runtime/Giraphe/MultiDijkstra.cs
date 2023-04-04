@@ -5,37 +5,37 @@ using System;
 
 namespace TorbuTils.Giraphe
 {
-    public class MultiDijkstra
+    public class MultiDijkstra<T>
     {
         public event Action Done;
-        private readonly Graph inputGraph;
-        private readonly ICollection<(int, int)> hotspots;  // tileId, costhere
+        private readonly Graph<T> inputGraph;
+        private readonly ICollection<(T, int)> hotspots;  // tileId, costhere
         private readonly int maxDistance;
-        [field: SerializeField] public Graph ResultGraph { get; private set; }
-        public MultiDijkstra(Graph inputGraph, ICollection<(int, int)> hotspots, int maxDistance = int.MaxValue)
+        [field: SerializeField] public Graph<T> ResultGraph { get; private set; }
+        public MultiDijkstra(Graph<T> inputGraph, ICollection<(T, int)> hotspots, int maxDistance = int.MaxValue)
         {
             this.inputGraph = inputGraph;
             this.maxDistance = maxDistance;
             this.hotspots = hotspots;
-            ResultGraph = Graph.MakeFromSatellites(inputGraph);
+            ResultGraph = Graph<T>.MakeFromSatellites(inputGraph);
         }
         public IEnumerable Solve()
         {
-            Queue<int> queue = new();  // ids
+            Queue<T> queue = new();  // ids
             foreach (var hotspot in hotspots)
             {
-                int tileId = hotspot.Item1;
+                T node = hotspot.Item1;
                 int costhere = hotspot.Item2;
-                ResultGraph.SetSatellite(tileId, Settings.CostSatellite, costhere);
-                queue.Enqueue(tileId);
+                ResultGraph.SetSatellite(node, Settings.CostSatellite, costhere);
+                queue.Enqueue(node);
             }
 
             while (queue.Count > 0)
             {
-                int current = queue.Dequeue();
+                T current = queue.Dequeue();
                 int? ch = (int?)ResultGraph.GetSatellite(current, Settings.CostSatellite);
                 int costHere = ch == null ? 0 : ch.Value;
-                foreach (int next in inputGraph.CopyEdgesFrom(current))
+                foreach (T next in inputGraph.CopyEdgesFrom(current))
                 {
                     yield return null;
                     int hypoCost = costHere + (int)inputGraph.GetWeight(current, next);
@@ -45,7 +45,7 @@ namespace TorbuTils.Giraphe
                     {
                         if (prevCost != null)
                         {
-                            foreach (int backtrack in ResultGraph.CopyEdgesTo(next))
+                            foreach (T backtrack in ResultGraph.CopyEdgesTo(next))
                             {
                                 ResultGraph.RemoveEdge(backtrack, next);
                             }

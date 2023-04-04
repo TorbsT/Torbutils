@@ -1,14 +1,17 @@
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TorbuTils.Giraphe
 {
     /// <summary>
-    /// Representation of a graph (computer science)
+    /// Computer-science graph.
     /// </summary>
-    [Serializable]
-    public class Graph
+    /// <typeparam name="T">Node identifier type.
+    /// Common types are int, Vector2Int and Vector3Int.</typeparam>
+    public class Graph<T>
     {
         /// <summary>
         /// Quantity of nodes that have ever been mentioned in edges or satellite data.
@@ -17,9 +20,9 @@ namespace TorbuTils.Giraphe
         public string Name { get; set; }
         private Edgees Edges { get; set; } = new();
         private Edgees AntiEdges { get; set; } = new();  // improves time complexity of CopyEdgesTo
-        private Dictionary<(int, int), int> Weights { get; set; } = new();
-        private Dictionary<int, Dictionary<string, object>> NodeSatellites { get; set; } = new();
-        private HashSet<int> Nodes { get; set; } = new();
+        private Dictionary<(T, T), int> Weights { get; set; } = new();
+        private Dictionary<T, Dictionary<string, object>> NodeSatellites { get; set; } = new();
+        private HashSet<T> Nodes { get; set; } = new();
 
         /// <summary>
         /// Creates a new Graph object with a
@@ -27,32 +30,31 @@ namespace TorbuTils.Giraphe
         /// </summary>
         /// <param name="inputGraph"></param>
         /// <returns></returns>
-        public static Graph MakeFromSatellites(Graph inputGraph)
+        public static Graph<T> MakeFromSatellites(Graph<T> inputGraph)
         {
-            Graph result = new();
-            for (int i = 0; i < inputGraph.NodeCount; i++)
+            Graph<T> result = new();
+            foreach (T node in inputGraph.NodeSatellites.Keys)
             {
-                if (!inputGraph.NodeSatellites.ContainsKey(i)) continue;
-                foreach (string key in inputGraph.NodeSatellites[i].Keys)
+                foreach (string key in inputGraph.NodeSatellites[node].Keys)
                 {
-                    object value = inputGraph.NodeSatellites[i][key];
-                    result.SetSatellite(i, key, value);
+                    object value = inputGraph.NodeSatellites[node][key];
+                    result.SetSatellite(node, key, value);
                 }
             }
             return result;
         }
-        
+
         /// <summary>
         /// Gets a copy of every node in this graph.
         /// A node is defined either though edges or satellite data.
         /// </summary>
         /// <returns>A collection of node IDs</returns>
-        public ICollection<int> CopyNodes()
+        public ICollection<T> CopyNodes()
         {
-            HashSet<int> result = new();
-            foreach (int id in Nodes)
+            HashSet<T> result = new();
+            foreach (T node in Nodes)
             {
-                result.Add(id);
+                result.Add(node);
             }
             return result;
         }
@@ -62,12 +64,12 @@ namespace TorbuTils.Giraphe
         /// <returns>
         /// A collection of tuples (from, to)
         /// </returns>
-        public ICollection<(int, int)> CopyEdges()
+        public ICollection<(T, T)> CopyEdges()
         {
-            HashSet<(int, int)> edges = new();
-            foreach (int from in Edges.GetNodes())
+            HashSet<(T, T)> edges = new();
+            foreach (T from in Edges.GetNodes())
             {
-                foreach (int to in Edges.GetNodeEdges(from))
+                foreach (T to in Edges.GetNodeEdges(from))
                 {
                     edges.Add((from, to));
                 }
@@ -80,14 +82,14 @@ namespace TorbuTils.Giraphe
         /// <returns>
         /// A collection of node ids, empty if node is nonexistent
         /// </returns>
-        public ICollection<int> CopyEdgesFrom(int from)
+        public ICollection<T> CopyEdgesFrom(T from)
         {
-            if (!Edges.HasNode(from)) return new HashSet<int>();
+            if (!Edges.HasNode(from)) return new HashSet<T>();
 
-            HashSet<int> result = new();
-            foreach (int i in Edges.GetNodeEdges(from))
+            HashSet<T> result = new();
+            foreach (T node in Edges.GetNodeEdges(from))
             {
-                result.Add(i);
+                result.Add(node);
             }
 
             return result;
@@ -98,14 +100,14 @@ namespace TorbuTils.Giraphe
         /// <returns>
         /// A collection of node ids, empty if node is nonexistent
         /// </returns>
-        public ICollection<int> CopyEdgesTo(int to)
+        public ICollection<T> CopyEdgesTo(T to)
         {
-            if (!AntiEdges.HasNode(to)) return new HashSet<int>();
+            if (!AntiEdges.HasNode(to)) return new HashSet<T>();
 
-            HashSet<int> result = new();
-            foreach (int i in AntiEdges.GetNodeEdges(to))
+            HashSet<T> result = new();
+            foreach (T node in AntiEdges.GetNodeEdges(to))
             {
-                result.Add(i);
+                result.Add(node);
             }
 
             return result;
@@ -114,7 +116,7 @@ namespace TorbuTils.Giraphe
         /// Gets the quantity of nodes directly accessible from node
         /// </summary>
         /// <returns>An integer, 0 if node is nonexistent</returns>
-        public int GetEdgesCountFrom(int from)
+        public int GetEdgesCountFrom(T from)
         {
             if (!Edges.HasNode(from)) return 0;
             return Edges.GetNodeEdges(from).Count;
@@ -123,7 +125,7 @@ namespace TorbuTils.Giraphe
         /// Gets the quantity of nodes with direct access to node
         /// </summary>
         /// <returns>An integer, 0 if node is nonexistent</returns>
-        public int GetEdgesCountTo(int to)
+        public int GetEdgesCountTo(T to)
         {
             if (!AntiEdges.HasNode(to)) return 0;
             return AntiEdges.GetNodeEdges(to).Count;
@@ -136,7 +138,7 @@ namespace TorbuTils.Giraphe
         /// <param name="from">Edge start node id.</param>
         /// <param name="to">Edge end node id.</param>
         /// <param name="weight">Edge weight. Ignore this parameter in unweighted graphs.</param>
-        public void AddEdge(int from, int to, int weight = 1)
+        public void AddEdge(T from, T to, int weight = 1)
         {
             Edges.Connect(from, to);
             AntiEdges.Connect(to, from);
@@ -151,7 +153,7 @@ namespace TorbuTils.Giraphe
         /// </summary>
         /// <param name="from">Edge start node id.</param>
         /// <param name="to">Edge end node id.</param>
-        public void RemoveEdge(int from, int to)
+        public void RemoveEdge(T from, T to)
         {
             Edges.Disconnect(from, to);
             AntiEdges.Disconnect(to, from);
@@ -160,30 +162,30 @@ namespace TorbuTils.Giraphe
         /// Gets satellite info of a node.
         /// Can get from nonexistent nodes.
         /// </summary>
-        /// <param name="id">The node id.</param>
+        /// <param name="node">The node id.</param>
         /// <param name="satelliteName">Specifies where the info is stored.</param>
         /// <returns>
         /// An object, null if there is no satellite info
         /// </returns>
-        public object GetSatellite(int id, string satelliteName)
+        public object GetSatellite(T node, string satelliteName)
         {
-            if (!NodeSatellites.ContainsKey(id)) return null;
-            if (!NodeSatellites[id].ContainsKey(satelliteName)) return null;
-            return NodeSatellites[id][satelliteName];
+            if (!NodeSatellites.ContainsKey(node)) return null;
+            if (!NodeSatellites[node].ContainsKey(satelliteName)) return null;
+            return NodeSatellites[node][satelliteName];
         }
         /// <summary>
         /// Stores satellite info on a node.
         /// Can store on nonexistent nodes.
         /// Overwrites previous info at the given satellite
         /// </summary>
-        /// <param name="id">The node id.</param>
+        /// <param name="node">The node id.</param>
         /// <param name="satelliteName">Specifies where the info should be stored.</param>
         /// <param name="value">Specifies the object to store</param>
-        public void SetSatellite(int id, string satelliteName, object value)
+        public void SetSatellite(T node, string satelliteName, object value)
         {
-            if (!NodeSatellites.ContainsKey(id)) NodeSatellites[id] = new();
-            if (!Nodes.Contains(id)) Nodes.Add(id);
-            NodeSatellites[id][satelliteName] = value;
+            if (!NodeSatellites.ContainsKey(node)) NodeSatellites[node] = new();
+            if (!Nodes.Contains(node)) Nodes.Add(node);
+            NodeSatellites[node][satelliteName] = value;
         }
         /// <summary>
         /// Sets the weight of an edge.
@@ -192,7 +194,7 @@ namespace TorbuTils.Giraphe
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="weight"></param>
-        public void SetWeight(int from, int to, int weight)
+        public void SetWeight(T from, T to, int weight)
         {
             Weights[(from, to)] = weight;
         }
@@ -202,7 +204,7 @@ namespace TorbuTils.Giraphe
         /// <param name="from">Edge start node id.</param>
         /// <param name="to">Edge end node id.</param>
         /// <returns>An integer, null if the edge weight is nonexistent.</returns>
-        public int? GetWeight(int from, int to)
+        public int? GetWeight(T from, T to)
         {
             if (!Weights.ContainsKey((from, to))) return null;
             return Weights[(from, to)];
@@ -213,7 +215,7 @@ namespace TorbuTils.Giraphe
         /// <param name="a">Node id A.</param>
         /// <param name="b">Node id B.</param>
         /// <returns>0, 1 or 2.</returns>
-        public int GetEdgeQuantityBetween(int a, int b)
+        public int GetEdgeQuantityBetween(T a, T b)
         {
             int quantity = 0;
             if (Edges.HasEdge(a, b)) quantity++;
@@ -226,15 +228,15 @@ namespace TorbuTils.Giraphe
         /// </summary>
         private class Edgees
         {
-            private readonly Dictionary<int, HashSet<int>> edges = new();
+            private readonly Dictionary<T, HashSet<T>> edges = new();
             internal int NodeCount { get; private set; }
 
-            internal bool HasNode(int id) => edges.ContainsKey(id);
-            internal bool HasEdge(int from, int to)
+            internal bool HasNode(T node) => edges.ContainsKey(node);
+            internal bool HasEdge(T from, T to)
                 => edges.ContainsKey(from) && edges[from].Contains(to);
-            internal ICollection<int> GetNodes() => edges.Keys;
-            internal ICollection<int> GetNodeEdges(int id) => edges[id];
-            internal void Connect(int from, int to)
+            internal ICollection<T> GetNodes() => edges.Keys;
+            internal ICollection<T> GetNodeEdges(T node) => edges[node];
+            internal void Connect(T from, T to)
             {
                 if (!edges.ContainsKey(from))
                 {
@@ -243,7 +245,7 @@ namespace TorbuTils.Giraphe
                 }
                 edges[from].Add(to);
             }
-            internal void Disconnect(int from, int to)
+            internal void Disconnect(T from, T to)
             {
                 if (edges.ContainsKey(from))
                 {
@@ -258,4 +260,3 @@ namespace TorbuTils.Giraphe
         }
     }
 }
-
