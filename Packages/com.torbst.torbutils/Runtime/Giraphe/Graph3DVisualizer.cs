@@ -10,9 +10,9 @@ namespace TorbuTils.Giraphe
     public class Graph3DVisualizer : GraphVisualizer<Vector3Int>
     {
         [field: SerializeField] public float Scale { get; set; } = 1f;
-        protected override (Vector3, Vector3)? GetLinePoses(Vector3Int from, Vector3Int to)
+        protected override Vector3? GetPos(Vector3Int node)
         {
-            return ((Vector3)from * Scale, (Vector3)to * Scale);
+            return (Vector3)node * Scale;
         }
     }
 }

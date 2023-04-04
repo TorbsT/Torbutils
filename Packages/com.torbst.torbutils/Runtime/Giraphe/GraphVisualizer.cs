@@ -130,42 +130,41 @@ namespace TorbuTils.Giraphe
                 else
                     Gizmos.color = EdgeColor * OneDirectionalEdgeColor;
 
-                (Vector3, Vector3)? tuple = GetLinePoses(from, to);
-                if (tuple == null) continue;
-                Vector3 fromPos = tuple.Value.Item1;
-                Vector3 toPos = tuple.Value.Item2;
-                Gizmos.DrawLine(fromPos, toPos);
+                Vector3? fromPos = GetPos(from);
+                Vector3? toPos = GetPos(to);
+                if (fromPos == null || toPos == null) continue;
+                Gizmos.DrawLine(fromPos.Value, toPos.Value);
             }
         }
-        protected virtual (Vector3, Vector3)? GetLinePoses(T from, T to)
+        protected virtual Vector3? GetPos(T node)
         {
-            return GetLinePosesFromSatellites(from, to);
+            return GetPosFromSatellites(node);
         }
-        protected (Vector3, Vector3)? GetLinePosesFromSatellites(T from, T to)
+        protected Vector3? GetPosFromSatellites(T node)
         {
-            object fromPosSat = graph.GetSatellite(from, Settings.PositionSatellite);
-            object toPosSat = graph.GetSatellite(to, Settings.PositionSatellite);
-            if (fromPosSat == null || toPosSat == null)
+            object posSat = graph.GetSatellite(node, Settings.PositionSatellite);
+            if (posSat == null)
             {
                 Debug.LogWarning(
                     $"Satellite info ({Settings.PositionSatellite})" +
-                    $" doesn't exist, can't visualize positions of edge." +
-                    $" fromSat = ({fromPosSat}), toSat = ({toPosSat}). " +
-                    $" fromId = {from}, toId = {to}");
+                    $" doesn't exist, can't visualize position." +
+                    $" posSat = ({posSat})," +
+                    $" node = {node}.");
                 return null;
             }
-            if (fromPosSat is Vector2 fromPos2 && toPosSat is Vector2 toPos2)
-                return (fromPos2, toPos2);
-            if (fromPosSat is Vector3 fromPos3 && toPosSat is Vector3 toPos3)
-                return (fromPos3, toPos3);
+            if (posSat is Vector2 pos2)
+                return pos2;
+            if (posSat is Vector3 pos3)
+                return pos3;
 
             Debug.LogWarning(
                 $"Satellite info ({Settings.PositionSatellite})" +
-                $" is not castable to Vector2.'" +
-                $" fromSat = ({fromPosSat}), toSat = ({toPosSat})." +
-                $" fromId = {from}, toId = {to}");
+                $" is not castable to Vector2 or Vector3.'" +
+                $" posSat = ({posSat})," +
+                $" node = {node}.");
             return null;
         }
+
         private void DrawNodes()
         {
             // Draw nodes
@@ -209,25 +208,9 @@ namespace TorbuTils.Giraphe
                 }
                 Gizmos.color = nodeColor;
 
-                object posSat = graph.GetSatellite(node, Settings.PositionSatellite);
-                if (posSat == null)
-                {
-                    Debug.LogWarning(
-                        $"Satellite info ({Settings.PositionSatellite})" +
-                        $" doesn't exist, can't visualize node position." +
-                        $" sat = ({posSat}), id = ({node})");
-                    continue;
-                }
-                if (posSat is not Vector2)
-                {
-                    Debug.LogWarning(
-                        $"Satellite info ({Settings.PositionSatellite})" +
-                        $" is not castable to Vector2.'" +
-                        $" sat = ({posSat}), id = ({node})");
-                    continue;
-                }
-
-                Vector2 pos = (Vector2)posSat;
+                Vector3? posN = GetPos(node);
+                if (posN == null) continue;
+                Vector3 pos = posN.Value;
                 float size = NodeSize * visual.size;
                 Vector3 sizeV3 = size * Vector3.one;
                 if (visual.shape == Shape.Box)
@@ -247,7 +230,7 @@ namespace TorbuTils.Giraphe
                     List<string> txt = new();
                     if (showId) txt.Add(node.ToString());
                     if (showCost) txt.Add(costhereSat.ToString());
-                    Handles.Label(pos + Vector2.up * size, string.Join(", ", txt));
+                    Handles.Label(pos + Vector3.up * size, string.Join(", ", txt));
                 }
             }
         }
