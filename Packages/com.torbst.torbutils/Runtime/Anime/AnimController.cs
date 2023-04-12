@@ -78,7 +78,6 @@ namespace TorbuTils
                         relative = 1f;
                         end = true;
                     }
-                    Debug.Log(relative);
                     float curveAdjusted = GetCurveAdjusted(anim.Curve, relative);
                     if (mirrorCurve)
                         curveAdjusted = 1f - curveAdjusted;
