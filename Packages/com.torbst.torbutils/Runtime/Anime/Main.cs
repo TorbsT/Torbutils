@@ -8,15 +8,23 @@ namespace TorbuTils.Anime
     {
         public static Main Instance { get; private set; }
 
-        public void Begin<T>(Anim<T> anim)
+        public int? Begin<T>(Anim<T> anim)
         {
             AnimController<T> controller = FindController<T>();
-            if (controller != null) controller.Begin(anim);
+            if (controller != null)
+                return controller.Begin(anim);
+            return null;
+        }
+        public bool Stop<T>(int id, float? stopAtTime = null)
+        {
+            AnimController<T> controller = FindController<T>();
+            if (controller != null)
+                return controller.Stop(id, stopAtTime);
+            return false;
         }
         public void Stop<T>(Anim<T> anim, float? stopAtTime = null)
         {
-            AnimController<T> controller = FindController<T>();
-            if (controller != null) controller.Stop(anim, stopAtTime);
+            Stop<T>(anim.Id, stopAtTime);
         }
 
         private void Awake()
@@ -100,6 +108,11 @@ namespace TorbuTils.Anime
         /// How the animation should loop once finished, if at all.
         /// </summary>
         public LoopMode Loop { get; set; } = LoopMode.None;
+        /// <summary>
+        /// Identifies the animation object,
+        /// can be used to stop the correct one
+        /// </summary>
+        public int Id { get; internal set; } = -1;
         internal float StartTime { get; set; } = Time.time;
 
         /// <summary>

@@ -10,22 +10,28 @@ namespace TorbuTils
             [field: SerializeField] public bool LogWarnings { get; set; } = true;
             private readonly List<Anim<T>> anims = new();
             private int count;
+            private int idCounter = 0;
 
-            internal void Begin(Anim<T> anim)
+            internal int Begin(Anim<T> anim)
             {
+                anim.Id = idCounter;
+                idCounter++;
                 anims.Add(anim);
                 count = anims.Count;
+                return anim.Id;
             } 
-            internal void Stop(Anim<T> anim, float? stopAtRelative = null)
+            internal bool Stop(int id, float? stopAtRelative = null)
             {
-                int i = anims.FindIndex(x => x == anim);
+                int i = anims.FindIndex(x => x.Id == id);
                 if (i == -1)
                 {
                     if (LogWarnings)
                         Debug.LogWarning(
-                            $"Tried stopping an unregistered {typeof(T)} animation: {anim}");
+                            $"Tried stopping an unregistered {typeof(T)} animation with id: {id}");
+                    return false;
                 } else
                 {
+                    Anim<T> anim = anims[i];
                     float stopAtRelativeNN = (float)stopAtRelative;
                     stopAtRelative = Mathf.Clamp(stopAtRelativeNN, 0f, 1f);
                     float curveAdjusted = GetCurveAdjusted(anim.Curve, stopAtRelativeNN);
@@ -33,6 +39,7 @@ namespace TorbuTils
                     anims.RemoveAt(i);
                     count = anims.Count;
                     anim.Finished();
+                    return true;
                 }
             }
             void Update()
