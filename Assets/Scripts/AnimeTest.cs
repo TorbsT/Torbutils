@@ -11,6 +11,7 @@ public class AnimeTest : MonoBehaviour
     [field: SerializeField] private Quaternion toQuat { get; set; }
     [field: SerializeField] private Vector3 toV3 { get; set; }
     [field: SerializeField, Range(0.1f, 10f)] private float duration { get; set; } = 1f;
+    [field: SerializeField] private LoopMode LoopMode { get; set; } = LoopMode.None;
     [field: SerializeField] private AnimationCurve curve { get; set; } = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     private void Awake()
@@ -27,7 +28,8 @@ public class AnimeTest : MonoBehaviour
             Duration = duration,
             Action = delegate (Color color) { rndr.material.color = color; },
             StartValue = rndr.material.color,
-            EndValue = toColor
+            EndValue = toColor,
+            Loop = LoopMode
         };
         colorAnim.Start();
 
@@ -37,7 +39,8 @@ public class AnimeTest : MonoBehaviour
             Duration = duration,
             Action = delegate (Vector3 pos) { transform.position = pos; },
             StartValue = transform.position,
-            EndValue = toV3
+            EndValue = toV3,
+            Loop = LoopMode
         };
         v3Anim.Start();
 
@@ -47,7 +50,8 @@ public class AnimeTest : MonoBehaviour
             Duration = duration,
             Action = delegate (Quaternion quat) { transform.rotation = quat; },
             StartValue = transform.rotation,
-            EndValue = toQuat
+            EndValue = toQuat,
+            Loop = LoopMode
         };
         quatAnim.Start();
     }

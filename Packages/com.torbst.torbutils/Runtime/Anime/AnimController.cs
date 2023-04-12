@@ -7,6 +7,7 @@ namespace TorbuTils
     {
         public abstract class AnimController<T> : MonoBehaviour
         {
+            [field: SerializeField] public bool LogWarnings { get; set; } = true;
             private readonly List<Anim<T>> anims = new();
             private int count;
 
@@ -15,17 +16,20 @@ namespace TorbuTils
                 anims.Add(anim);
                 count = anims.Count;
             } 
-            internal void Stop(Anim<T> anim, float stopAtRelative)
+            internal void Stop(Anim<T> anim, float? stopAtRelative = null)
             {
                 int i = anims.FindIndex(x => x == anim);
                 if (i == -1)
                 {
-                    Debug.LogWarning("Tried stopping an unregistered animation: "+anim);
+                    if (LogWarnings)
+                        Debug.LogWarning(
+                            $"Tried stopping an unregistered {typeof(T)} animation: {anim}");
                 } else
                 {
-                    stopAtRelative = Mathf.Clamp(stopAtRelative, 0f, 1f);
-                    float curveAdjusted = GetCurveAdjusted(anim.Curve, stopAtRelative);
-                    anim.Action(GetActualValue(anim.StartValue, anim.EndValue, stopAtRelative));
+                    float stopAtRelativeNN = (float)stopAtRelative;
+                    stopAtRelative = Mathf.Clamp(stopAtRelativeNN, 0f, 1f);
+                    float curveAdjusted = GetCurveAdjusted(anim.Curve, stopAtRelativeNN);
+                    anim.Action(GetActualValue(anim.StartValue, anim.EndValue, stopAtRelativeNN));
                     anims.RemoveAt(i);
                     count = anims.Count;
                     anim.Finished();
@@ -39,13 +43,38 @@ namespace TorbuTils
                     float timePassed = Time.time - anim.StartTime;
                     float relative = (timePassed / anim.Duration);
                     bool end = false;
-                    if (relative >= 1f)
+                    bool mirrorCurve = false;
+
+                    if (anim.Loop == LoopMode.Reset)
+                    {
+                        relative %= 1f;
+                    }
+                    else if (anim.Loop == LoopMode.InvertSameCurve)
+                    {
+                        relative %= 2f;
+                        if (relative >= 1f)
+                        {
+                            relative = 2f - relative;
+                        }
+                    }
+                    else if (anim.Loop == LoopMode.InvertMirrorCurve)
+                    {
+                        relative %= 2f;
+                        if (relative >= 1f)
+                        {
+                            relative -= 1;
+                            mirrorCurve = true;
+                        }
+                    }
+                    else if (relative >= 1f && anim.Loop == LoopMode.None)
                     {
                         relative = 1f;
                         end = true;
                     }
-
+                    Debug.Log(relative);
                     float curveAdjusted = GetCurveAdjusted(anim.Curve, relative);
+                    if (mirrorCurve)
+                        curveAdjusted = 1f - curveAdjusted;
 
                     T startValue = anim.StartValue;
                     T endValue = anim.EndValue;

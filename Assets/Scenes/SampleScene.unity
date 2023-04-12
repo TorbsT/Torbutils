@@ -388,31 +388,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a02e33373352646a08632ec65ae08e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <toColor>k__BackingField: {r: 0.5283019, g: 0.27162692, b: 0.27162692, a: 1}
-  <toQuat>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
-  <toV3>k__BackingField: {x: 0, y: 0, z: 0}
+  <toColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <toQuat>k__BackingField: {x: 0.07898991, y: 0.42101008, z: -0.036833607, w: 0.90285903}
+  <toV3>k__BackingField: {x: 1, y: 0, z: 0}
   <duration>k__BackingField: 1
+  <LoopMode>k__BackingField: 3
   <curve>k__BackingField:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
-    - serializedVersion: 3
-      time: 0.9
-      value: 2
-      inSlope: -0.46053007
-      outSlope: -0.46053007
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.68392915
     - serializedVersion: 3
       time: 1
       value: 1
@@ -483,7 +475,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1272328431}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.68, y: 2.41, z: 0.06}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -551,6 +543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d7882f9fd9dd244faa22acd7d8f0f7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <LogWarnings>k__BackingField: 1
 --- !u!114 &1301119657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -563,6 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c9e9504ea05ee4abb3c395b116b0af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <LogWarnings>k__BackingField: 1
 --- !u!114 &1301119658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,6 +569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdee2c3cb8f795849852b1fbecb878c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <LogWarnings>k__BackingField: 1
 --- !u!114 &1301119659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,6 +582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 952de6ca73fd59240ae45a98dacb501d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <LogWarnings>k__BackingField: 1
 --- !u!114 &1301119660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -599,6 +595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00cfbe4d36f4b0a469747f407c9af82b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <LogWarnings>k__BackingField: 1
 --- !u!1 &1733542485
 GameObject:
   m_ObjectHideFlags: 0
