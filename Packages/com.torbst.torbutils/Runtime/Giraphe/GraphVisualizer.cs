@@ -136,6 +136,7 @@ namespace TorbuTils.Giraphe
                 Gizmos.DrawLine(fromPos.Value, toPos.Value);
             }
         }
+#endif
         protected virtual Vector3? GetPos(T node)
         {
             return GetPosFromSatellites(node);
@@ -164,7 +165,7 @@ namespace TorbuTils.Giraphe
                 $" node = {node}.");
             return null;
         }
-
+#if UNITY_EDITOR
         private void DrawNodes()
         {
             // Draw nodes
