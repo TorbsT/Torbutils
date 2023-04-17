@@ -4,24 +4,32 @@ using System;
 
 namespace TorbuTils.Anime
 {
-    internal class Main : MonoBehaviour
+    public class Main : MonoBehaviour
     {
         public static Main Instance { get; private set; }
+
+        public int? Begin<T>(Anim<T> anim)
+        {
+            AnimController<T> controller = FindController<T>();
+            if (controller != null)
+                return controller.Begin(anim);
+            return null;
+        }
+        public bool Stop<T>(int id, float? stopAtTime = null)
+        {
+            AnimController<T> controller = FindController<T>();
+            if (controller != null)
+                return controller.Stop(id, stopAtTime);
+            return false;
+        }
+        public void Stop<T>(Anim<T> anim, float? stopAtTime = null)
+        {
+            Stop<T>(anim.Id, stopAtTime);
+        }
 
         private void Awake()
         {
             Instance = this;
-        }
-
-        internal void Begin<T>(Anim<T> anim)
-        {
-            AnimController<T> controller = FindController<T>();
-            if (controller != null) controller.Begin(anim);
-        }
-        internal void Stop<T>(Anim<T> anim, float stopAtTime)
-        {
-            AnimController<T> controller = FindController<T>();
-            if (controller != null) controller.Stop(anim, stopAtTime);
         }
         private AnimController<T> FindController<T>()
         {
@@ -37,8 +45,6 @@ namespace TorbuTils.Anime
             return controller;
         }
     }
-        
-    public delegate void BasicAction<T>(T value);
     /// <summary>
     /// Animation object for interpolating between values over time.
     /// MUST assign Action, StartValue and EndValue.
@@ -69,7 +75,7 @@ namespace TorbuTils.Anime
         /// For vector movement, this could e.g. look like
         /// (value) => { transform.position = value; }
         /// </summary>
-        public BasicAction<T> Action { get; set; }
+        public Action<T> Action { get; set; }
 
         // OPTIONAL ASSIGNMENT
         /// <summary>
@@ -83,7 +89,7 @@ namespace TorbuTils.Anime
         /// Parameter is this Anim object.
         /// (before JustFinished).
         /// </summary>
-        public BasicAction<Anim<T>> OnFinishAction { get; set; }
+        public Action<Anim<T>> OnFinishAction { get; set; }
         /// <summary>
         /// Defines how the value between StartValue and EndValue
         /// will be interpolated based on time.
@@ -98,6 +104,15 @@ namespace TorbuTils.Anime
         /// Defaults to 1 second.
         /// </summary>
         public float Duration { get; set; } = 1f;
+        /// <summary>
+        /// How the animation should loop once finished, if at all.
+        /// </summary>
+        public LoopMode Loop { get; set; } = LoopMode.None;
+        /// <summary>
+        /// Identifies the animation object,
+        /// can be used to stop the correct one
+        /// </summary>
+        public int Id { get; internal set; } = -1;
         internal float StartTime { get; set; } = Time.time;
 
         /// <summary>
@@ -145,5 +160,18 @@ namespace TorbuTils.Anime
                 OnFinishAction(this);
             JustFinished?.Invoke(this);
         }
+    }
+    /// <summary>
+    /// None: no loop.
+    /// Reset: Goes back to 0 progress instantly.
+    /// InvertSameCurve: Invert the animation, using the same curve.
+    /// InvertMirrorCurve: Invert the animation, using a mirrored curve.
+    /// </summary>
+    public enum LoopMode
+    {
+        None,
+        Reset,
+        InvertSameCurve,
+        InvertMirrorCurve
     }
 }
