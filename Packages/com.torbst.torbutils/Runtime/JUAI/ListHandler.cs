@@ -50,7 +50,9 @@ namespace TorbuTils.JUAI
         }
         private void OnGUI()
         {
+#if UNITY_EDITOR
             Handles.Label(Vector3.zero, $"{elements.Count}, {transform.sizeDelta}");
+#endif
         }
     }
 }
