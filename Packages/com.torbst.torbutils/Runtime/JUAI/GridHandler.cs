@@ -12,6 +12,13 @@ namespace TorbuTils.JUAI
         private new RectTransform transform;
         private bool queueRefresh;
         private int rows;
+
+        private Vector2 oldCellSpacing;
+        private Vector2 oldCellSize;
+        private int oldPaddingTop;
+        private int oldPaddingRight;
+        private int oldPaddingBottom;
+        private int oldPaddingLeft;
         private void Awake()
         {
             grid = GetComponent<GridLayoutGroup>();
@@ -19,10 +26,15 @@ namespace TorbuTils.JUAI
         }
         private void Update()
         {
+            if (grid.spacing != oldCellSpacing
+                || grid.cellSize != oldCellSize
+                || grid.padding.top != oldPaddingTop
+                || grid.padding.right != oldPaddingRight
+                || grid.padding.left != oldPaddingLeft
+                || grid.padding.bottom != oldPaddingBottom)
+                queueRefresh = true;
             if (queueRefresh)
-            {
                 Refresh();
-            }
         }
         private void OnRectTransformDimensionsChange()
         {
@@ -58,6 +70,13 @@ namespace TorbuTils.JUAI
             float gridPadding = grid.padding.top+grid.padding.bottom;
             float finalHeight = cellHeight*rows + cellSpacing*(rows-1) + gridPadding;
             transform.sizeDelta = new(transform.sizeDelta.x, finalHeight);
+
+            oldCellSize = grid.cellSize;
+            oldCellSpacing = grid.spacing;
+            oldPaddingTop = grid.padding.top;
+            oldPaddingLeft = grid.padding.left;
+            oldPaddingRight = grid.padding.right;
+            oldPaddingBottom = grid.padding.bottom;
         }
     }
 }
