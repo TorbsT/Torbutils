@@ -65,6 +65,11 @@ namespace TorbuTils.JUAI
 
                 selected = trigger ? null : newSelect;
                 hovered = newHover;
+
+                foreach (var handler in handlers)
+                {
+                    handler.Ticked();
+                }
             }
             private void Drag(GameObject go)
             {
@@ -85,10 +90,16 @@ namespace TorbuTils.JUAI
                 => Interact(go, obj => obj.Hovered = false);
             private void Select(GameObject go, bool trigger)
             {
-                foreach (var handler in handlers)
-                    handler.Select(go);
-                if (!trigger)
+                if (trigger)
+                {
+                    foreach (var handler in handlers)
+                        handler.Trigger(go);
+                } else
+                {
+                    foreach (var handler in handlers)
+                        handler.Select(go);
                     Interact(go, obj => obj.Selected = true);
+                }
             }
             private void Unselect(GameObject go)
                 => Interact(go, obj => obj.Selected = false);
@@ -165,6 +176,8 @@ namespace TorbuTils.JUAI
             bool Hover(GameObject go);
             void Select(GameObject go);
             bool Drag(GameObject go);
+            void Trigger(GameObject go);
+            void Ticked();
         }
     }
 }
