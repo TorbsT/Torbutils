@@ -1,12 +1,12 @@
 {
   "name": "com.torbst.torbutils",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "author": {
     "name": "Torbj\u00f8rn Stakvik",
     "email": "torbst2001@gmail.com",
     "url": "https://github.com/TorbsT"
   },
   "displayName": "TorbuTils",
-  "description": "Common utilities used in TorbsT's projects.\n* JUAI - UI additions\n* Noice - Noise tool\n* Giraphe - graph problem tool\n* Anime - animation tool\n* EzPools - gameobject pools",
+  "description": "Common utilities used in TorbsT's projects.\n* Audi - Audio management\n* JUAI - UI additions\n* Noice - Noise tool\n* Giraphe - graph problem tool\n* Anime - animation tool\n* EzPools - gameobject pools",
   "unity": "2022.1"
 }
